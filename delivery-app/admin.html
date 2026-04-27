@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 陈鸿外卖</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+        .login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg,#1a1a2e,#16213e); position: relative; }
+        .login-page::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.5; }
+        .login-box { background: #fff; padding: 44px 40px; border-radius: 16px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.25); position: relative; z-index: 1; }
+        .login-box h1 { font-size: 24px; text-align: center; margin-bottom: 4px; }
+        .login-box p { text-align: center; color: #999; font-size: 13px; margin-bottom: 28px; }
+        .login-box input { width: 100%; padding: 12px 16px; border: 1.5px solid #e8e8e8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; transition: border-color .2s; }
+        .login-box input:focus { border-color: #1a1a2e; box-shadow: 0 0 0 3px rgba(26,26,46,.1); }
+        .login-box button { width: 100%; padding: 13px; background: linear-gradient(135deg,#1a1a2e,#16213e); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+        .login-box button:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,26,46,.35); }
+        .login-box .error { color: #ff4444; font-size: 13px; text-align: center; margin-top: 10px; }
+        .login-box .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: #999; text-decoration: none; transition: color .2s; }
+        .login-box .back-link:hover { color: #1a1a2e; }
+
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 220px; background: #1a1a2e; color: #fff; padding: 0; flex-shrink: 0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .sidebar-header h2 { font-size: 15px; font-weight: 700; letter-spacing: .5px; }
+        .sidebar-header small { font-size: 11px; color: rgba(255,255,255,.35); }
+        .sidebar-nav { padding: 12px 0; flex: 1; }
+        .sidebar a { display: flex; align-items: center; gap: 10px; padding: 12px 24px; color: rgba(255,255,255,.6); text-decoration: none; font-size: 14px; cursor: pointer; transition: all .2s; border-left: 3px solid transparent; }
+        .sidebar a:hover { color: #fff; background: rgba(255,255,255,.04); }
+        .sidebar a.active { color: #4fc3f7; background: rgba(79,195,247,.08); border-left-color: #4fc3f7; font-weight: 600; }
+        .main { flex: 1; padding: 28px 32px; overflow-y: auto; }
+        .main h1 { font-size: 22px; margin-bottom: 20px; font-weight: 700; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e8e8e8; }
+        .topbar .user { font-size: 13px; color: #999; }
+        .topbar .logout { color: #4fc3f7; cursor: pointer; font-size: 13px; text-decoration: none; font-weight: 500; }
+
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: #fff; padding: 22px 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.04); border: 1px solid rgba(0,0,0,.04); transition: transform .2s, box-shadow .2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+        .stat-card .num { font-size: 30px; font-weight: 800; background: linear-gradient(135deg,#1a1a2e,#4fc3f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .label { font-size: 12px; color: #999; margin-top: 6px; font-weight: 500; }
+
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.04); margin-bottom: 20px; border: 1px solid rgba(0,0,0,.04); overflow: hidden; }
+        .card-header { padding: 18px 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-size: 15px; font-weight: 600; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid #f5f5f5; }
+        th { background: #fafafa; font-weight: 600; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+        tr:hover td { background: #fafafa; }
+        tr:last-child td { border-bottom: none; }
+
+        .btn { display: inline-block; padding: 7px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; }
+        .btn-primary { background: #1a1a2e; color: #fff; }
+        .btn-primary:hover { background: #2d2d5e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,26,46,.3); }
+        .btn-danger { background: #ff4444; color: #fff; }
+        .btn-danger:hover { background: #cc0000; }
+        .btn-sm { padding: 5px 12px; font-size: 11px; }
+        .btn-outline { background: #fff; border: 1.5px solid #ddd; color: #666; }
+        .btn-outline:hover { border-color: #1a1a2e; color: #1a1a2e; background: #f8f8ff; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; color: #888; margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: .3px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #e8e8e8; border-radius: 8px; font-size: 13px; outline: none; transition: border-color .2s; }
+        .form-group input:focus, .form-group select:focus { border-color: #1a1a2e; box-shadow: 0 0 0 3px rgba(26,26,46,.08); }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,46,.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #fff; border-radius: 16px; padding: 28px 32px; width: 500px; max-width: 90vw; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.2); animation: modalIn .25s ease; }
+        @keyframes modalIn { from { transform: translateY(20px) scale(.96); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .modal h3 { font-size: 17px; margin-bottom: 20px; }
+
+        .empty { text-align: center; padding: 48px 20px; color: #bbb; font-size: 14px; }
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .chip { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; background: #f0f0f0; color: #666; margin: 2px; }
+    </style>
+</head>
+<body>
+<div id="adminApp">
+    <!-- Login -->
+    <div class="login-page" id="adminLogin">
+        <div class="login-box">
+            <h1>🔐 管理后台</h1>
+            <p>陈鸿外卖 · 平台管理</p>
+            <input type="text" id="aLoginUser" placeholder="管理员账号" autocomplete="off">
+            <input type="password" id="aLoginPass" placeholder="密码">
+            <button onclick="adminLogin()">登录</button>
+            <p class="error" id="aLoginError"></p>
+            <a href="/delivery" class="back-link">← 返回外卖首页</a>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="layout" id="adminDashboard" style="display:none;">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🔐 管理后台</h2>
+                <small>陈鸿外卖 · 平台管理</small>
+            </div>
+            <div class="sidebar-nav">
+                <a class="active" onclick="switchSection('dashboard')">📊 数据概览</a>
+                <a onclick="switchSection('restaurants')">🏪 商家管理</a>
+                <a onclick="switchSection('users')">👥 用户管理</a>
+                <a onclick="switchSection('orders')">📋 订单管理</a>
+                <a onclick="switchSection('categories')">🏷️ 分类管理</a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="topbar">
+                <span></span>
+                <div><span class="user" id="aUserDisplay"></span> <a class="logout" onclick="adminLogout()">退出</a></div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="section active" id="sec-dashboard">
+                <h1>📊 平台概览</h1>
+                <div class="stats">
+                    <div class="stat-card"><div class="num" id="statRestaurants">0</div><div class="label">商家总数</div></div>
+                    <div class="stat-card"><div class="num" id="statUsers">0</div><div class="label">用户总数</div></div>
+                    <div class="stat-card"><div class="num" id="statOrders">0</div><div class="label">订单总数</div></div>
+                    <div class="stat-card"><div class="num" id="statRevenue">¥0</div><div class="label">总营收</div></div>
+                </div>
+            </div>
+
+            <!-- Restaurants -->
+            <div class="section" id="sec-restaurants">
+                <h1>🏪 商家管理</h1>
+                <div class="card">
+                    <div class="card-header"><h3>所有商家</h3><button class="btn btn-primary" onclick="showAddRestaurant()">+ 添加商家</button></div>
+                    <div id="adminRestaurantList"></div>
+                </div>
+            </div>
+
+            <!-- Users -->
+            <div class="section" id="sec-users">
+                <h1>👥 用户管理</h1>
+                <div class="card"><div id="adminUserList"></div></div>
+            </div>
+
+            <!-- Orders -->
+            <div class="section" id="sec-orders">
+                <h1>📋 订单管理</h1>
+                <div class="card"><div id="adminOrderList"></div></div>
+            </div>
+
+            <!-- Categories -->
+            <div class="section" id="sec-categories">
+                <h1>🏷️ 分类管理</h1>
+                <div class="card">
+                    <div class="card-header"><h3>所有分类</h3><button class="btn btn-primary" onclick="showAddCategory()">+ 添加分类</button></div>
+                    <div id="adminCategoryList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Restaurant Modal -->
+<div class="modal-overlay" id="restaurantModal">
+    <div class="modal">
+        <h3 id="restaurantModalTitle">添加商家</h3>
+        <div class="form-row">
+            <div class="form-group"><label>商家名称</label><input id="rName"></div>
+            <div class="form-group"><label>城市</label><input id="rCity" value="北京"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>起送价</label><input id="rMinOrder" value="¥20起送"></div>
+            <div class="form-group"><label>配送费</label><input id="rFee" value="配送¥3"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>配送时间</label><input id="rTime" value="30分钟"></div>
+            <div class="form-group"><label>距离</label><input id="rDist" value="1.0km"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>评分</label><input id="rRating" type="number" step="0.1" value="4.5"></div>
+            <div class="form-group"><label>月销量</label><input id="rSales" type="number" value="0"></div>
+        </div>
+        <div class="form-group"><label>分类ID (1-10)</label><input id="rCatId" type="number" value="1"></div>
+        <button class="btn btn-primary" onclick="saveRestaurant()">保存</button>
+        <button class="btn btn-outline" onclick="closeRestaurantModal()" style="margin-left:8px;">取消</button>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+        <h3 id="categoryModalTitle">添加分类</h3>
+        <div class="form-group"><label>分类名</label><input id="cName"></div>
+        <div class="form-group"><label>图标(emoji)</label><input id="cIcon" value="🍽️"></div>
+        <div class="form-group"><label>颜色</label><input id="cColor" value="#f5f5f5"></div>
+        <button class="btn btn-primary" onclick="saveCategory()">保存</button>
+        <button class="btn btn-outline" onclick="closeCategoryModal()" style="margin-left:8px;">取消</button>
+    </div>
+</div>
+
+<script>
+const API = 'http://localhost:3000/api';
+let adminToken = localStorage.getItem('adminToken') || null;
+let editRestaurantId = null;
+let editCategoryId = null;
+
+function aHeaders() { return { 'Content-Type': 'application/json', ...(adminToken ? { 'Authorization': adminToken } : {}) }; }
+async function aApi(path, opts = {}) {
+    const res = await fetch(`${API}${path}`, { headers: aHeaders(), ...opts });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message || '请求失败');
+    return json.data;
+}
+
+async function adminLogin() {
+    const u = document.getElementById('aLoginUser').value.trim();
+    const p = document.getElementById('aLoginPass').value.trim();
+    document.getElementById('aLoginError').textContent = '';
+    if (!u || !p) { document.getElementById('aLoginError').textContent = '请输入账号和密码'; return; }
+    try {
+        const data = await aApi('/admin/auth/login', { method: 'POST', body: JSON.stringify({ username: u, password: p }) });
+        adminToken = data.token;
+        localStorage.setItem('adminToken', adminToken);
+        localStorage.setItem('adminUser', data.username);
+        await loadAdminDashboard();
+    } catch (e) { document.getElementById('aLoginError').textContent = e.message; }
+}
+
+async function loadAdminDashboard() {
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = '';
+    document.getElementById('aUserDisplay').textContent = `管理员: ${localStorage.getItem('adminUser') || ''}`;
+    await loadAdminStats();
+    await loadAdminRestaurants();
+    await loadAdminUsers();
+    await loadAdminOrders();
+    await loadAdminCategories();
+    switchSection('dashboard');
+}
+
+async function loadAdminStats() {
+    try {
+        const s = await aApi('/admin/stats');
+        document.getElementById('statRestaurants').textContent = s.restaurants;
+        document.getElementById('statUsers').textContent = s.users;
+        document.getElementById('statOrders').textContent = s.orders;
+        document.getElementById('statRevenue').textContent = `¥${Number(s.revenue).toFixed(2)}`;
+    } catch {}
+}
+
+async function loadAdminRestaurants() {
+    const el = document.getElementById('adminRestaurantList');
+    try {
+        const list = await aApi('/admin/restaurants');
+        if (list.length === 0) { el.innerHTML = '<div class="empty">暂无商家</div>'; return; }
+        el.innerHTML = '<table><thead><tr><th>ID</th><th>名称</th><th>城市</th><th>评分</th><th>月售</th><th>操作</th></tr></thead><tbody>' +
+            list.map(r => `<tr><td>${r.id}</td><td>${r.name}</td><td>${r.city}</td><td>★ ${r.rating}</td><td>${r.monthly_sales}</td><td>
+                <button class="btn btn-sm btn-outline" onclick="editRestaurant(${r.id})">编辑</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteRestaurant(${r.id})">删除</button>
+            </td></tr>`).join('') + '</tbody></table>';
+    } catch { el.innerHTML = '<div class="empty">加载失败</div>'; }
+}
+
+function showAddRestaurant() {
+    editRestaurantId = null;
+    document.getElementById('restaurantModalTitle').textContent = '添加商家';
+    ['rName','rCity','rMinOrder','rFee','rTime','rDist','rRating','rSales','rCatId'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('rCity').value = '北京';
+    document.getElementById('rRating').value = '4.5';
+    document.getElementById('rCatId').value = '1';
+    document.getElementById('restaurantModal').classList.add('active');
+}
+function closeRestaurantModal() { document.getElementById('restaurantModal').classList.remove('active'); }
+function editRestaurant(id) {
+    editRestaurantId = id;
+    document.getElementById('restaurantModalTitle').textContent = '编辑商家';
+    // We'll just reload with a prompt approach
+    const name = prompt('新名称:');
+    if (!name) return;
+    const city = prompt('城市:', '北京');
+    const catId = prompt('分类ID:', '1');
+    aApi(`/admin/restaurants/${id}`, { method: 'PUT', body: JSON.stringify({ name, city, category_id: parseInt(catId), rating: 4.5, monthly_sales: 0, delivery_time: '30分钟', distance: '1.0km', min_order: '¥20起送', delivery_fee: '配送¥3' }) }).then(() => loadAdminRestaurants());
+}
+
+async function saveRestaurant() {
+    const name = document.getElementById('rName').value.trim();
+    if (!name) { alert('请输入商家名称'); return; }
+    try {
+        await aApi('/admin/restaurants', { method: 'POST', body: JSON.stringify({
+            name, city: document.getElementById('rCity').value, min_order: document.getElementById('rMinOrder').value,
+            delivery_fee: document.getElementById('rFee').value, delivery_time: document.getElementById('rTime').value,
+            distance: document.getElementById('rDist').value, rating: parseFloat(document.getElementById('rRating').value) || 4.5,
+            monthly_sales: parseInt(document.getElementById('rSales').value) || 0,
+            category_id: parseInt(document.getElementById('rCatId').value) || 1
+        })});
+        closeRestaurantModal();
+        await loadAdminRestaurants();
+    } catch (e) { alert(e.message); }
+}
+
+async function deleteRestaurant(id) {
+    if (!confirm('确认删除该商家及其所有数据？')) return;
+    try { await aApi(`/admin/restaurants/${id}`, { method: 'DELETE' }); await loadAdminRestaurants(); }
+    catch (e) { alert(e.message); }
+}
+
+async function loadAdminUsers() {
+    const el = document.getElementById('adminUserList');
+    try {
+        const users = await aApi('/admin/users');
+        if (users.length === 0) { el.innerHTML = '<div class="empty">暂无用户</div>'; return; }
+        el.innerHTML = '<table><thead><tr><th>ID</th><th>用户名</th><th>手机</th><th>地址</th><th>注册时间</th></tr></thead><tbody>' +
+            users.map(u => `<tr><td>${u.id}</td><td>${u.username}</td><td>${u.phone || '-'}</td><td>${u.address || '-'}</td><td>${u.created_at}</td></tr>`).join('') + '</tbody></table>';
+    } catch { el.innerHTML = '<div class="empty">加载失败</div>'; }
+}
+
+async function loadAdminOrders() {
+    const el = document.getElementById('adminOrderList');
+    try {
+        const orders = await aApi('/admin/orders');
+        if (orders.length === 0) { el.innerHTML = '<div class="empty">暂无订单</div>'; return; }
+        el.innerHTML = '<table><thead><tr><th>ID</th><th>顾客</th><th>商品</th><th>金额</th><th>状态</th><th>时间</th></tr></thead><tbody>' +
+            orders.map(o => {
+                const items = (o.items || []).map(i => `${i.item_name}x${i.quantity}`).join(', ');
+                return `<tr><td>#${o.id}</td><td>${o.customer_name}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${items}</td><td>¥${o.total_price}</td><td><span class="chip">${STATUS_MAP[o.status] || o.status}</span></td><td>${o.created_at}</td></tr>`;
+            }).join('') + '</tbody></table>';
+    } catch { el.innerHTML = '<div class="empty">加载失败</div>'; }
+}
+
+async function loadAdminCategories() {
+    const el = document.getElementById('adminCategoryList');
+    try {
+        const cats = await aApi('/admin/categories');
+        if (cats.length === 0) { el.innerHTML = '<div class="empty">暂无分类</div>'; return; }
+        el.innerHTML = '<table><thead><tr><th>ID</th><th>图标</th><th>名称</th><th>颜色</th><th>操作</th></tr></thead><tbody>' +
+            cats.map(c => `<tr><td>${c.id}</td><td>${c.icon}</td><td>${c.name}</td><td><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${c.color};vertical-align:middle;"></span> ${c.color}</td><td>
+                <button class="btn btn-sm btn-outline" onclick="editCategory(${c.id},'${c.name}','${c.icon}','${c.color}')">编辑</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCategory(${c.id})">删除</button>
+            </td></tr>`).join('') + '</tbody></table>';
+    } catch { el.innerHTML = '<div class="empty">加载失败</div>'; }
+}
+
+function showAddCategory() {
+    editCategoryId = null;
+    document.getElementById('categoryModalTitle').textContent = '添加分类';
+    document.getElementById('cName').value = '';
+    document.getElementById('cIcon').value = '🍽️';
+    document.getElementById('cColor').value = '#f5f5f5';
+    document.getElementById('categoryModal').classList.add('active');
+}
+function closeCategoryModal() { document.getElementById('categoryModal').classList.remove('active'); }
+function editCategory(id, name, icon, color) {
+    editCategoryId = id;
+    document.getElementById('categoryModalTitle').textContent = '编辑分类';
+    document.getElementById('cName').value = name;
+    document.getElementById('cIcon').value = icon;
+    document.getElementById('cColor').value = color;
+    document.getElementById('categoryModal').classList.add('active');
+}
+async function saveCategory() {
+    const name = document.getElementById('cName').value.trim();
+    if (!name) { alert('请输入分类名'); return; }
+    const body = { name, icon: document.getElementById('cIcon').value, color: document.getElementById('cColor').value };
+    try {
+        if (editCategoryId) { await aApi(`/admin/categories/${editCategoryId}`, { method: 'PUT', body: JSON.stringify(body) }); }
+        else { await aApi('/admin/categories', { method: 'POST', body: JSON.stringify(body) }); }
+        closeCategoryModal();
+        await loadAdminCategories();
+    } catch (e) { alert(e.message); }
+}
+async function deleteCategory(id) {
+    if (!confirm('确认删除？')) return;
+    try { await aApi(`/admin/categories/${id}`, { method: 'DELETE' }); await loadAdminCategories(); }
+    catch (e) { alert(e.message); }
+}
+
+function adminLogout() {
+    localStorage.removeItem('adminToken');
+    adminToken = null;
+    document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('adminLogin').style.display = '';
+}
+
+function switchSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(`sec-${name}`).classList.add('active');
+    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+    const labels = { dashboard: '数据概览', restaurants: '商家管理', users: '用户管理', orders: '订单管理', categories: '分类管理' };
+    document.querySelectorAll('.sidebar a').forEach(a => { if (a.textContent.includes(labels[name])) a.classList.add('active'); });
+    if (name === 'restaurants') loadAdminRestaurants();
+    if (name === 'users') loadAdminUsers();
+    if (name === 'orders') loadAdminOrders();
+    if (name === 'categories') loadAdminCategories();
+    if (name === 'dashboard') loadAdminStats();
+}
+
+const STATUS_MAP = { pending: '待确认', confirmed: '已确认', preparing: '准备中', delivering: '配送中', delivered: '已送达', cancelled: '已取消' };
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (adminToken) {
+        try {
+            await loadAdminDashboard();
+        } catch {
+            localStorage.removeItem('adminToken');
+            adminToken = null;
+        }
+    }
+});
+</script>
+</body>
+</html>

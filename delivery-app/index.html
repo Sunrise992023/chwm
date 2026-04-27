@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陈鸿外卖 - 送啥都快</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-left">
+                    <a href="/delivery" class="logo">
+                        <span style="font-size:22px;font-weight:700;color:#FF8C00;">陈鸿外卖</span>
+                    </a>
+                    <div class="location" style="cursor:pointer;">
+                        <span class="location-icon">📍</span>
+                        <span class="location-text">北京·朝阳区</span>
+                        <span class="location-arrow">▼</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <a href="#" class="header-link" id="myOrdersLink">我的订单</a>
+                    <a href="#" class="header-link" id="myFavoritesLink">我的收藏</a>
+                    <a href="/merchant" class="header-link">商家入口</a>
+                    <a href="/admin" class="header-link">管理后台</a>
+                    <a href="#" class="header-link" id="authLink">登录/注册</a>
+                    <a href="#" class="header-link" id="logoutLink" style="display:none;">退出</a>
+                    <a href="#" class="header-link cart-btn">
+                        🛒 购物车
+                        <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <nav class="main-nav">
+                    <a href="/delivery" class="nav-item active" data-route="delivery">外卖</a>
+                    <a href="/food" class="nav-item" data-route="food">美食</a>
+                    <a href="/supermarket" class="nav-item" data-route="supermarket">超市</a>
+                    <a href="/paotui" class="nav-item" data-route="paotui">跑腿</a>
+                    <a href="/tuangou" class="nav-item" data-route="tuangou">团购</a>
+                    <a href="/yuding" class="nav-item" data-route="yuding">预订</a>
+                </nav>
+                <div class="search-box">
+                    <input type="text" placeholder="搜索商家或商品" class="search-input" id="globalSearch">
+                    <button class="search-btn" id="globalSearchBtn">搜索</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Main Content Area (route-based) ===== -->
+    <main class="main-content">
+
+        <!-- ===== PAGE: 外卖 /delivery ===== -->
+        <div class="page" data-page="delivery">
+            <section class="hero">
+                <div class="container">
+                    <div class="banner">
+                        <div class="banner-text">
+                            <h1>陈鸿外卖</h1>
+                            <p>送啥都快 · 30分钟送达</p>
+                            <div class="banner-tags">
+                                <span class="tag">新用户立减15元</span>
+                                <span class="tag">满30减10</span>
+                                <span class="tag">0元配送</span>
+                            </div>
+                        </div>
+                        <div class="banner-image">
+                            <span style="font-size:80px;">🛵</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="categories">
+                <div class="container">
+                    <div class="category-grid" id="categoryGrid">
+                        <div class="category-item active" data-category-id="0"><div class="category-icon" style="background:#FF8C00;color:#fff;">🍔</div><span>全部</span></div>
+                        <div class="category-item" data-category-id="1"><div class="category-icon" style="background:#FFF5E6;">🍔</div><span>美食</span></div>
+                        <div class="category-item" data-category-id="2"><div class="category-icon" style="background:#FFE8E8;">🍰</div><span>甜品</span></div>
+                        <div class="category-item" data-category-id="3"><div class="category-icon" style="background:#E8F5FF;">🥤</div><span>饮品</span></div>
+                        <div class="category-item" data-category-id="4"><div class="category-icon" style="background:#FFF0E6;">🍜</div><span>粉面</span></div>
+                        <div class="category-item" data-category-id="5"><div class="category-icon" style="background:#E8FFE8;">🥗</div><span>轻食</span></div>
+                        <div class="category-item" data-category-id="6"><div class="category-icon" style="background:#FFF5E6;">🍣</div><span>日料</span></div>
+                        <div class="category-item" data-category-id="7"><div class="category-icon" style="background:#FFE8E8;">🌶️</div><span>火锅</span></div>
+                        <div class="category-item" data-category-id="8"><div class="category-icon" style="background:#E8F5FF;">🍕</div><span>披萨</span></div>
+                        <div class="category-item" data-category-id="9"><div class="category-icon" style="background:#FFF0E6;">🥩</div><span>烤肉</span></div>
+                        <div class="category-item" data-category-id="10"><div class="category-icon" style="background:#E8FFE8;">🍱</div><span>便当</span></div>
+                    </div>
+                </div>
+            </section>
+            <section class="filter-bar">
+                <div class="container">
+                    <div class="filter-options">
+                        <button class="filter-btn active">综合排序</button>
+                        <button class="filter-btn">好评优先</button>
+                        <button class="filter-btn">起送价最低</button>
+                        <button class="filter-btn">配送最快</button>
+                        <button class="filter-btn">评分最高</button>
+                        <div class="filter-right">
+                            <span class="result-count">共 <strong>24</strong> 家商家</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="restaurants">
+                <div class="container">
+                    <div class="restaurant-list" id="restaurantList"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PAGE: 美食 /food ===== -->
+        <div class="page" data-page="food">
+            <section class="page-hero" style="background:linear-gradient(135deg,#FFF0E6,#FFD4A8);">
+                <div class="container">
+                    <div class="page-hero-content">
+                        <h1>🍽️ 今日美食推荐</h1>
+                        <p>发现附近美味，每天不重样</p>
+                    </div>
+                </div>
+            </section>
+            <section class="page-body">
+                <div class="container">
+                    <h2 class="section-title">🔥 人气推荐</h2>
+                    <div class="recommend-grid" id="foodGrid">
+                        <!-- rendered by JS -->
+                    </div>
+                    <h2 class="section-title" style="margin-top:36px;">🍳 精选专题</h2>
+                    <div class="topic-grid">
+                        <div class="topic-card" style="background:linear-gradient(135deg,#FFF5E6,#FFE8CC);">
+                            <span class="topic-icon">🌶️</span>
+                            <span class="topic-title">麻辣专场</span>
+                            <span class="topic-desc">无辣不欢</span>
+                        </div>
+                        <div class="topic-card" style="background:linear-gradient(135deg,#E8F5FF,#CCE8FF);">
+                            <span class="topic-icon">🥗</span>
+                            <span class="topic-title">轻食沙拉</span>
+                            <span class="topic-desc">健康低卡</span>
+                        </div>
+                        <div class="topic-card" style="background:linear-gradient(135deg,#FFE8E8,#FFCCCC);">
+                            <span class="topic-icon">🍰</span>
+                            <span class="topic-title">甜蜜下午茶</span>
+                            <span class="topic-desc">治愈甜点</span>
+                        </div>
+                        <div class="topic-card" style="background:linear-gradient(135deg,#E8FFE8,#CCFFCC);">
+                            <span class="topic-icon">🥟</span>
+                            <span class="topic-title">中式早点</span>
+                            <span class="topic-desc">唤醒清晨</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PAGE: 超市 /supermarket ===== -->
+        <div class="page" data-page="supermarket">
+            <section class="page-hero" style="background:linear-gradient(135deg,#E8F5FF,#BBDEFB);">
+                <div class="container">
+                    <div class="page-hero-content">
+                        <h1>🛒 美团超市</h1>
+                        <p>日用百货 · 生鲜果蔬 · 最快30分钟达</p>
+                    </div>
+                </div>
+            </section>
+            <section class="page-body">
+                <div class="container">
+                    <div class="supermarket-cats">
+                        <div class="sm-cat"><span class="sm-icon">🥬</span><span>时令蔬菜</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🍎</span><span>新鲜水果</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🥩</span><span>肉禽蛋品</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🦐</span><span>海鲜水产</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🥛</span><span>乳品烘焙</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🍚</span><span>粮油调味</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🧃</span><span>饮料冲调</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🍜</span><span>方便速食</span></div>
+                        <div class="sm-cat"><span class="sm-icon">🧹</span><span>个护清洁</span></div>
+                    </div>
+                    <h2 class="section-title">🔥 限时秒杀</h2>
+                    <div class="deal-grid" id="supermarketDeals">
+                        <!-- rendered by JS -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PAGE: 跑腿 /paotui ===== -->
+        <div class="page" data-page="paotui">
+            <section class="page-hero" style="background:linear-gradient(135deg,#FFF5E6,#FFE0B2);">
+                <div class="container">
+                    <div class="page-hero-content">
+                        <h1>🏃 美团跑腿</h1>
+                        <p>帮你买 · 帮你送 · 帮你办</p>
+                    </div>
+                </div>
+            </section>
+            <section class="page-body">
+                <div class="container">
+                    <div class="service-grid">
+                        <div class="service-card">
+                            <span class="service-icon">📦</span>
+                            <h3>帮我买</h3>
+                            <p>任意商品，代买送到家</p>
+                        </div>
+                        <div class="service-card">
+                            <span class="service-icon">📄</span>
+                            <h3>帮我送</h3>
+                            <p>文件物品，极速配送</p>
+                        </div>
+                        <div class="service-card">
+                            <span class="service-icon">🛵</span>
+                            <h3>帮我取</h3>
+                            <p>快递包裹，代取代送</p>
+                        </div>
+                        <div class="service-card">
+                            <span class="service-icon">🎂</span>
+                            <h3>帮我办</h3>
+                            <p>节日送礼，跑腿代办</p>
+                        </div>
+                    </div>
+                    <div class="paotui-promo">
+                        <div class="paotui-promo-item"><span class="promo-tag">新人专享</span><span>首单免配送费</span></div>
+                        <div class="paotui-promo-item"><span class="promo-tag">满减</span><span>满39减8</span></div>
+                        <div class="paotui-promo-item"><span class="promo-tag">特惠</span><span>5公里以内仅需6元</span></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PAGE: 团购 /tuangou ===== -->
+        <div class="page" data-page="tuangou">
+            <section class="page-hero" style="background:linear-gradient(135deg,#FCE4EC,#F8BBD0);">
+                <div class="container">
+                    <div class="page-hero-content">
+                        <h1>🎉 美团团购</h1>
+                        <p>超值团购 · 多人更优惠</p>
+                    </div>
+                </div>
+            </section>
+            <section class="page-body">
+                <div class="container">
+                    <div class="deal-tabs">
+                        <button class="deal-tab active">美食套餐</button>
+                        <button class="deal-tab">休闲娱乐</button>
+                        <button class="deal-tab">美容美发</button>
+                        <button class="deal-tab">生活服务</button>
+                    </div>
+                    <div class="deal-grid" id="tuangouGrid">
+                        <!-- rendered by JS -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PAGE: 预订 /yuding ===== -->
+        <div class="page" data-page="yuding">
+            <section class="page-hero" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);">
+                <div class="container">
+                    <div class="page-hero-content">
+                        <h1>📅 餐厅预订</h1>
+                        <p>提前预订，不用排队</p>
+                    </div>
+                </div>
+            </section>
+            <section class="page-body">
+                <div class="container">
+                    <div class="yuding-features">
+                        <div class="yuding-feature">
+                            <span class="yuding-icon">🍽️</span>
+                            <h3>热门餐厅</h3>
+                            <p>精选高品质餐厅，一键预订</p>
+                        </div>
+                        <div class="yuding-feature">
+                            <span class="yuding-icon">🎫</span>
+                            <h3>预订享优惠</h3>
+                            <p>提前订座，享受专属折扣</p>
+                        </div>
+                        <div class="yuding-feature">
+                            <span class="yuding-icon">⏰</span>
+                            <h3>准时保障</h3>
+                            <p>超时赔付，放心预订</p>
+                        </div>
+                        <div class="yuding-feature">
+                            <span class="yuding-icon">🎂</span>
+                            <h3>聚会包场</h3>
+                            <p>生日派对、商务宴请</p>
+                        </div>
+                    </div>
+                    <h2 class="section-title">🔥 热门推荐</h2>
+                    <div class="deal-grid" id="yudingGrid">
+                        <!-- rendered by JS -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <button class="modal-close" id="authModalClose">✕</button>
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-tab="login">登录</button>
+                <button class="modal-tab" data-tab="register">注册</button>
+            </div>
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group"><label>用户名</label><input type="text" placeholder="请输入用户名" required></div>
+                <div class="form-group"><label>密码</label><input type="password" placeholder="请输入密码" required></div>
+                <button type="submit" class="auth-submit">登录</button>
+                <p class="auth-error" id="loginError"></p>
+            </form>
+            <form class="auth-form" id="registerForm">
+                <div class="form-group"><label>用户名</label><input type="text" placeholder="2-20个字符" required></div>
+                <div class="form-group"><label>手机号</label><input type="tel" placeholder="选填，方便联系"></div>
+                <div class="form-group"><label>密码</label><input type="password" placeholder="至少6位密码" required></div>
+                <div class="form-group"><label>确认密码</label><input type="password" placeholder="再次输入密码" required></div>
+                <button type="submit" class="auth-submit">注册</button>
+                <p class="auth-error" id="registerError"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Location Picker Modal -->
+    <div class="modal-overlay" id="locationPicker">
+        <div class="modal" style="max-width:420px;">
+            <button class="modal-close" id="locationPickerClose">✕</button>
+            <h3 style="font-size:18px;margin-bottom:16px;">📍 选择城市</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                <div class="city-option active" data-city="北京" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">北京</div>
+                <div class="city-option" data-city="上海" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">上海</div>
+                <div class="city-option" data-city="广州" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">广州</div>
+                <div class="city-option" data-city="深圳" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">深圳</div>
+                <div class="city-option" data-city="杭州" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">杭州</div>
+                <div class="city-option" data-city="成都" style="padding:12px;border:2px solid #eee;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;">成都</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restaurant Detail Modal -->
+    <div class="modal-overlay" id="restaurantDetailModal">
+        <div class="modal modal-lg">
+            <button class="modal-close" id="restaurantDetailClose">✕</button>
+            <div id="restaurantDetailBody"></div>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div class="modal-overlay" id="ordersModal">
+        <div class="modal modal-lg">
+            <button class="modal-close" id="ordersModalClose">✕</button>
+            <h3 style="font-size:18px;margin-bottom:16px;">📋 我的订单</h3>
+            <div id="ordersList" style="max-height:420px;overflow-y:auto;">
+                <div class="cart-empty"><span class="cart-empty-icon">📋</span><p>暂无订单</p><p class="cart-empty-hint">去下单点好吃的吧</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Favorites Modal -->
+    <div class="modal-overlay" id="favoritesModal">
+        <div class="modal modal-lg">
+            <button class="modal-close" id="favoritesModalClose">✕</button>
+            <h3 style="font-size:18px;margin-bottom:16px;">❤️ 我的收藏</h3>
+            <div id="favoritesList" style="max-height:420px;overflow-y:auto;">
+                <div class="cart-empty"><span class="cart-empty-icon">❤️</span><p>还没有收藏的商家</p><p class="cart-empty-hint">去发现美食吧</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header"><h3>🛒 购物车</h3><button class="cart-close" id="cartClose">✕</button></div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty"><span class="cart-empty-icon">🛒</span><p>购物车是空的</p><p class="cart-empty-hint">去选几样好吃的吧</p></div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total"><span>合计：</span><span class="cart-total-price" id="cartTotal">¥0.00</span></div>
+            <button class="checkout-btn" id="checkoutBtn">去结算</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="/delivery">关于美团</a>
+                <a href="#">联系客服</a>
+                <a href="#">商家入驻</a>
+                <a href="#">帮助中心</a>
+                <a href="#">隐私政策</a>
+            </div>
+            <div class="footer-info">
+                <p>© 2024 陈鸿外卖 Meituan. All rights reserved.</p>
+                <p>增值电信业务经营许可证：京B2-20160025 | 京ICP备13008572号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
